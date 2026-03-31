@@ -621,6 +621,40 @@
   </div>
 </section>
 
+
+<section id="thinking" style="background:#0f0f0e;">
+  <div style="max-width:900px;margin:0 auto;">
+    <div style="font-family:monospace;font-size:0.72rem;letter-spacing:.1em;text-transform:uppercase;color:#c8522a;margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem;">How I think<span style="flex:1;height:1px;background:#2a2a28;max-width:60px;display:inline-block;"></span></div>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.75rem,3vw,2.5rem);color:#f7f5f0;margin-bottom:2.5rem;letter-spacing:-0.02em;line-height:1.15;">Engineering principles I ship by</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;">
+      <div style="border-top:2px solid #c8522a;padding-top:1.25rem;">
+        <div style="font-size:0.9rem;font-weight:500;color:#f7f5f0;margin-bottom:0.75rem;">Measure before you optimise</div>
+        <p style="font-size:0.825rem;color:#9a9890;font-weight:300;line-height:1.8;">Every architectural decision in my RAG system was validated with RAGAS scores before and after. I don't guess — I instrument, measure, and then decide. Changing chunk size without an eval harness is just vibes engineering.</p>
+      </div>
+      <div style="border-top:2px solid #c8522a;padding-top:1.25rem;">
+        <div style="font-size:0.9rem;font-weight:500;color:#f7f5f0;margin-bottom:0.75rem;">Own every layer you ship</div>
+        <p style="font-size:0.825rem;color:#9a9890;font-weight:300;line-height:1.8;">I built the chunker from scratch instead of using LangChain's. Not because frameworks are bad — because I needed to understand the tradeoffs before I could tune them. You can't debug a black box at 2am during an incident.</p>
+      </div>
+      <div style="border-top:2px solid #c8522a;padding-top:1.25rem;">
+        <div style="font-size:0.9rem;font-weight:500;color:#f7f5f0;margin-bottom:0.75rem;">Infrastructure is not an afterthought</div>
+        <p style="font-size:0.825rem;color:#9a9890;font-weight:300;line-height:1.8;">Most AI engineers build great models that nobody can run in production. My background is the opposite — I start from the infrastructure and work upward. Containerised, observable, and cost-optimised from day one.</p>
+      </div>
+      <div style="border-top:2px solid #c8522a;padding-top:1.25rem;">
+        <div style="font-size:0.9rem;font-weight:500;color:#f7f5f0;margin-bottom:0.75rem;">Reliability over cleverness</div>
+        <p style="font-size:0.825rem;color:#9a9890;font-weight:300;line-height:1.8;">The system that stays up at 3am beats the clever one that occasionally fails. At JPMorgan I chose boring, well-understood Kubernetes patterns over cutting-edge tooling — and shipped zero-downtime migrations for 12 microservices.</p>
+      </div>
+      <div style="border-top:2px solid #c8522a;padding-top:1.25rem;">
+        <div style="font-size:0.9rem;font-weight:500;color:#f7f5f0;margin-bottom:0.75rem;">Data leaves the network last</div>
+        <p style="font-size:0.825rem;color:#9a9890;font-weight:300;line-height:1.8;">Running Ollama locally wasn't just about cost — it was a security decision. Infrastructure runbooks contain sensitive configuration. I design systems where sensitive data stays on-prem by default and only moves when there's explicit justification.</p>
+      </div>
+      <div style="border-top:2px solid #c8522a;padding-top:1.25rem;">
+        <div style="font-size:0.9rem;font-weight:500;color:#f7f5f0;margin-bottom:0.75rem;">Hybrid beats pure</div>
+        <p style="font-size:0.825rem;color:#9a9890;font-weight:300;line-height:1.8;">Pure vector search misses exact terms. Pure keyword search misses meaning. Pure cloud costs more than hybrid. The answer is almost always "both, intelligently combined" — whether that's retrieval strategies, deployment models, or cost structures.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Skills -->
 <section id="skills">
   <div class="section-label">Skills</div>
