@@ -772,6 +772,85 @@
   </div>
 </section>
 
+
+<!-- Case Study -->
+<section id="case-study" style="background:#f7f5f0;">
+  <div class="section-label">Case study</div>
+  <h2>RAG Cloud Docs — deep dive</h2>
+  <p class="section-intro">A production-grade RAG system built from scratch. No framework magic — every layer understood and owned.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:3rem;">
+    <div style="border:1px solid #e0ddd6;padding:1.5rem;background:#fff;">
+      <div style="font-family:monospace;font-size:0.7rem;letter-spacing:.08em;text-transform:uppercase;color:#c8522a;margin-bottom:0.5rem;">The problem</div>
+      <p style="font-size:0.875rem;color:#3a3a38;font-weight:300;line-height:1.75;">On-call engineers spent 20+ minutes searching through hundreds of pages of runbooks during incidents. Keyword search returned too many irrelevant results. The cost of slow answers was real — extended outages.</p>
+    </div>
+    <div style="border:1px solid #e0ddd6;padding:1.5rem;background:#fff;">
+      <div style="font-family:monospace;font-size:0.7rem;letter-spacing:.08em;text-transform:uppercase;color:#c8522a;margin-bottom:0.5rem;">The approach</div>
+      <p style="font-size:0.875rem;color:#3a3a38;font-weight:300;line-height:1.75;">Build a RAG system that answers in natural language, cites its source, and never hallucinates. Run it locally with Ollama so there are zero API costs and zero data leaves the network.</p>
+    </div>
+    <div style="border:1px solid #e0ddd6;padding:1.5rem;background:#fff;">
+      <div style="font-family:monospace;font-size:0.7rem;letter-spacing:.08em;text-transform:uppercase;color:#c8522a;margin-bottom:0.5rem;">The result</div>
+      <p style="font-size:0.875rem;color:#3a3a38;font-weight:300;line-height:1.75;">Sub-second query latency. Faithfulness score of 0.929 across 28 domain-specific Q&A pairs. Context recall of 1.000 — the right chunks found every time. Runs entirely on local hardware.</p>
+    </div>
+  </div>
+
+  <div style="margin-bottom:3rem;">
+    <div style="font-family:monospace;font-size:0.7rem;letter-spacing:.08em;text-transform:uppercase;color:#c8522a;margin-bottom:1rem;">Architecture</div>
+    <img src="architecture.svg" alt="RAG system architecture diagram" style="width:100%;border:1px solid #e0ddd6;" onerror="this.style.display='none'"/>
+    <div style="background:#0f0f0e;padding:1.5rem;font-family:monospace;font-size:0.78rem;color:#9a9890;line-height:2;">
+      <span style="color:#c8d4a0;">Documents</span> → Loader → Chunker (512 tok) → Embedder → ChromaDB<br>
+      <span style="color:#c8d4a0;">Question</span> → [Vector Search + BM25] → RRF Fusion → Top-5 Chunks → LLM → <span style="color:#c8d4a0;">Answer + Citations</span>
+    </div>
+  </div>
+
+  <div style="margin-bottom:3rem;">
+    <div style="font-family:monospace;font-size:0.7rem;letter-spacing:.08em;text-transform:uppercase;color:#c8522a;margin-bottom:1.5rem;">Key engineering decisions</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div style="border-left:2px solid #c8522a;padding-left:1.5rem;">
+        <div style="font-size:0.9rem;font-weight:500;color:#0f0f0e;margin-bottom:0.5rem;">Why hybrid retrieval over pure vector search?</div>
+        <p style="font-size:0.825rem;color:#3a3a38;font-weight:300;line-height:1.75;">Vector search understands meaning but fails on exact terms — flag names like <code style="font-size:0.75rem;background:#eeece6;padding:1px 4px;">--kubelet-timeout</code>, error codes, version numbers. BM25 catches these precisely. Combining both with Reciprocal Rank Fusion improved context recall from 0.71 to 1.000.</p>
+      </div>
+      <div style="border-left:2px solid #c8522a;padding-left:1.5rem;">
+        <div style="font-size:0.9rem;font-weight:500;color:#0f0f0e;margin-bottom:0.5rem;">Why build the chunker from scratch?</div>
+        <p style="font-size:0.825rem;color:#3a3a38;font-weight:300;line-height:1.75;">Framework chunkers hide the decision. Chunk size directly affects answer quality — too small and a step loses its context, too large and irrelevant noise enters the prompt. Tested 256, 512, and 1024 tokens. 512 with 50-token overlap gave the best faithfulness scores.</p>
+      </div>
+      <div style="border-left:2px solid #c8522a;padding-left:1.5rem;">
+        <div style="font-size:0.9rem;font-weight:500;color:#0f0f0e;margin-bottom:0.5rem;">Why Ollama instead of OpenAI?</div>
+        <p style="font-size:0.825rem;color:#3a3a38;font-weight:300;line-height:1.75;">Zero cost, zero latency overhead from API calls, and no data leaves the network. For infrastructure runbooks containing sensitive config, this matters. The system auto-falls back to OpenAI if Ollama isn't running — best of both worlds.</p>
+      </div>
+      <div style="border-left:2px solid #c8522a;padding-left:1.5rem;">
+        <div style="font-size:0.9rem;font-weight:500;color:#0f0f0e;margin-bottom:0.5rem;">Why RAGAS evaluation?</div>
+        <p style="font-size:0.825rem;color:#3a3a38;font-weight:300;line-height:1.75;">You can't improve what you can't measure. Every change to chunk size, retrieval strategy, or prompt was validated against 28 hand-written Q&A pairs. This caught a faithfulness regression when switching chunk sizes — saved hours of manual testing.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:2rem;">
+    <div style="font-family:monospace;font-size:0.7rem;letter-spacing:.08em;text-transform:uppercase;color:#c8522a;margin-bottom:1.5rem;">Evaluation results — 28 domain Q&amp;A pairs</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      <div style="background:#0f0f0e;padding:1.5rem;text-align:center;">
+        <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:#c8d4a0;line-height:1;">0.929</div>
+        <div style="font-size:0.75rem;color:#9a9890;margin-top:0.5rem;letter-spacing:.05em;text-transform:uppercase;">Faithfulness</div>
+        <div style="font-size:0.72rem;color:#5a5a58;margin-top:0.25rem;">answers grounded in source docs</div>
+      </div>
+      <div style="background:#0f0f0e;padding:1.5rem;text-align:center;">
+        <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:#c8d4a0;line-height:1;">1.000</div>
+        <div style="font-size:0.75rem;color:#9a9890;margin-top:0.5rem;letter-spacing:.05em;text-transform:uppercase;">Context recall</div>
+        <div style="font-size:0.72rem;color:#5a5a58;margin-top:0.25rem;">right chunks found every time</div>
+      </div>
+      <div style="background:#0f0f0e;padding:1.5rem;text-align:center;">
+        <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:#c8d4a0;line-height:1;">0.945</div>
+        <div style="font-size:0.75rem;color:#9a9890;margin-top:0.5rem;letter-spacing:.05em;text-transform:uppercase;">Context precision</div>
+        <div style="font-size:0.72rem;color:#5a5a58;margin-top:0.25rem;">retrieved chunks were relevant</div>
+      </div>
+    </div>
+  </div>
+
+  <a href="https://github.com/jagadeeshrl93/rag-cloud-docs" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.75rem;background:#0f0f0e;color:#f7f5f0;text-decoration:none;font-size:0.875rem;font-weight:500;letter-spacing:.02em;transition:background .2s;">
+    View full source on GitHub ↗
+  </a>
+</section>
+
 <!-- Experience -->
 <section id="experience">
   <div class="section-label">Experience</div>
